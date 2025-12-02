@@ -5,7 +5,7 @@ const { uploadImage } = require('../services/storage');
 const { sendResultEmail } = require('../services/email');
 const { v4: uuidv4 } = require('uuid');
 
-router.post('/', async (req, res) => {
+router.post('/generate-glazing', async (req, res) => {
   try {
     const { imageBase64, facadeColor, railingMaterial, contactData } = req.body;
 
