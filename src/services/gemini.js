@@ -9,7 +9,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
  */
 async function generateImages(imageBase64, facadeColor, railingMaterial) {
   const model = genAI.getGenerativeModel({
-    model: 'gemini-3-pro-preview',
+    model: 'gemini-3-pro-image-preview',
     generationConfig: {
       responseModalities: ['Text', 'Image']
     }
