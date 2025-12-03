@@ -4,10 +4,16 @@ const { getGlazingOnlyPrompt, getFullModificationPrompt } = require('../prompts/
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 /**
- * Generate balcony glazing visualization images using Gemini 3 Pro
+ * Generate balcony glazing visualization images using Gemini
+ * Using gemini-2.0-flash-exp-image-generation with responseModalities for image output
  */
 async function generateImages(imageBase64, facadeColor, railingMaterial) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-3.0-pro-image' });
+  const model = genAI.getGenerativeModel({
+    model: 'gemini-3-pro-preview',
+    generationConfig: {
+      responseModalities: ['Text', 'Image']
+    }
+  });
 
   // Strip data URL prefix if present
   const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
@@ -22,16 +28,18 @@ async function generateImages(imageBase64, facadeColor, railingMaterial) {
   ]);
 
   const glazingOnlyResponse = glazingOnlyResult.response;
-  const glazingOnlyImagePart = glazingOnlyResponse.candidates?.[0]?.content?.parts?.find(
-    part => part.inlineData
-  );
+  const glazingOnlyParts = glazingOnlyResponse.candidates?.[0]?.content?.parts || [];
+  
+  // Find the image part in the response
+  const glazingOnlyImagePart = glazingOnlyParts.find(part => part.inlineData);
 
   if (!glazingOnlyImagePart) {
+    console.error('[Gemini] Response parts:', JSON.stringify(glazingOnlyParts, null, 2));
     throw new Error('No image in glazing-only response');
   }
 
   const glazingOnlyImage = `data:${glazingOnlyImagePart.inlineData.mimeType};base64,${glazingOnlyImagePart.inlineData.data}`;
-  console.log('[Gemini] Glazing-only image generated');
+  console.log('[Gemini] Glazing-only image generated successfully');
 
   // Check if additional modifications are requested
   const hasAdditionalModifications = 
@@ -50,15 +58,15 @@ async function generateImages(imageBase64, facadeColor, railingMaterial) {
     ]);
 
     const fullResponse = fullResult.response;
-    const fullImagePart = fullResponse.candidates?.[0]?.content?.parts?.find(
-      part => part.inlineData
-    );
+    const fullParts = fullResponse.candidates?.[0]?.content?.parts || [];
+    const fullImagePart = fullParts.find(part => part.inlineData);
 
     if (fullImagePart) {
       fullModificationImage = `data:${fullImagePart.inlineData.mimeType};base64,${fullImagePart.inlineData.data}`;
-      console.log('[Gemini] Full modification image generated');
+      console.log('[Gemini] Full modification image generated successfully');
     } else {
       console.warn('[Gemini] No image in full modification response');
+      console.warn('[Gemini] Response parts:', JSON.stringify(fullParts, null, 2));
     }
   }
 
