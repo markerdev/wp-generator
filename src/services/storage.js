@@ -1,15 +1,23 @@
 const { Storage } = require('@google-cloud/storage');
 
-// Initialize Google Cloud Storage
-const storage = new Storage({
-  projectId: process.env.GCS_PROJECT_ID,
-  credentials: {
-    client_email: process.env.GCS_CLIENT_EMAIL,
-    private_key: process.env.GCS_PRIVATE_KEY?.replace(/\\n/g, '\n')
+// Parse credentials from JSON secret file
+let credentials;
+try {
+  const credentialsJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+  if (credentialsJson) {
+    credentials = JSON.parse(credentialsJson);
   }
-});
+} catch (error) {
+  console.error('[Storage] Failed to parse GOOGLE_APPLICATION_CREDENTIALS_JSON:', error.message);
+}
 
-const bucketName = process.env.GCS_BUCKET_NAME;
+// Initialize Google Cloud Storage
+const storage = credentials ? new Storage({
+  projectId: credentials.project_id,
+  credentials: credentials
+}) : null;
+
+const bucketName = process.env.GCS_BUCKET_NAME || 'parvekelasitus-images';
 
 /**
  * Upload a base64 image to Google Cloud Storage
@@ -18,6 +26,10 @@ const bucketName = process.env.GCS_BUCKET_NAME;
  * @returns {Promise<string>} Public URL of the uploaded image
  */
 async function uploadImage(base64Image, filename) {
+  if (!storage) {
+    throw new Error('Google Cloud Storage not configured - missing credentials');
+  }
+
   // Strip data URL prefix if present
   const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
   
@@ -49,6 +61,11 @@ async function uploadImage(base64Image, filename) {
  * @param {string} filename - Filename to delete
  */
 async function deleteImage(filename) {
+  if (!storage) {
+    console.error('[Storage] Cannot delete - storage not configured');
+    return;
+  }
+
   const bucket = storage.bucket(bucketName);
   const file = bucket.file(filename);
   
