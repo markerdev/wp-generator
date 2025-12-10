@@ -8,7 +8,7 @@ apiKey.apiKey = process.env.BREVO_API_KEY;
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 /**
- * Send result email with generated images
+ * Send result email with generated images as inline attachments (CID)
  */
 async function sendResultEmail(data) {
   const {
@@ -21,8 +21,8 @@ async function sendResultEmail(data) {
     role,
     facadeColor,
     railingMaterial,
-    glazingOnlyImageUrl,
-    fullModificationImageUrl
+    glazingOnlyImageBase64,
+    fullModificationImageBase64
   } = data;
 
   console.log(`[Email] Sending result email to: ${email}`);
@@ -117,13 +117,13 @@ async function sendResultEmail(data) {
                   
                   <div style="margin-bottom: 20px;">
                     <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;"><strong>Parvekelasitus:</strong></p>
-                    <img src="${glazingOnlyImageUrl}" alt="Parvekelasitus-visualisointi" style="width: 100%; border-radius: 8px; border: 1px solid #e0e0e0;">
+                    <img src="cid:glazing-only-image" alt="Parvekelasitus-visualisointi" style="width: 100%; border-radius: 8px; border: 1px solid #e0e0e0;">
                   </div>
                   
-                  ${fullModificationImageUrl ? `
+                  ${fullModificationImageBase64 ? `
                   <div style="margin-bottom: 20px;">
                     <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;"><strong>Täysi muokkaus:</strong></p>
-                    <img src="${fullModificationImageUrl}" alt="Täysi muokkaus -visualisointi" style="width: 100%; border-radius: 8px; border: 1px solid #e0e0e0;">
+                    <img src="cid:full-modification-image" alt="Täysi muokkaus -visualisointi" style="width: 100%; border-radius: 8px; border: 1px solid #e0e0e0;">
                   </div>
                   ` : ''}
                   
@@ -149,6 +149,29 @@ async function sendResultEmail(data) {
     </html>
   `;
 
+  // Build attachments array with inline images (CID)
+  const attachments = [];
+
+  // Strip data URL prefix if present and add glazing-only image
+  const glazingBase64Clean = glazingOnlyImageBase64.replace(/^data:image\/\w+;base64,/, '');
+  attachments.push({
+    content: glazingBase64Clean,
+    name: 'parvekelasitus.png',
+    contentId: 'glazing-only-image'
+  });
+  console.log(`[Email] Added glazing-only image attachment (${Math.round(glazingBase64Clean.length / 1024)} KB)`);
+
+  // Add full modification image if present
+  if (fullModificationImageBase64) {
+    const fullBase64Clean = fullModificationImageBase64.replace(/^data:image\/\w+;base64,/, '');
+    attachments.push({
+      content: fullBase64Clean,
+      name: 'taysi-muokkaus.png',
+      contentId: 'full-modification-image'
+    });
+    console.log(`[Email] Added full modification image attachment (${Math.round(fullBase64Clean.length / 1024)} KB)`);
+  }
+
   const sendSmtpEmail = {
     sender: {
       name: process.env.BREVO_SENDER_NAME || 'Lumon SmartProtect',
@@ -161,12 +184,13 @@ async function sendResultEmail(data) {
       { email: process.env.NOTIFICATION_EMAIL }
     ] : [],
     subject: `Parvekelasitus-visualisointi: ${housingCompanyName}`,
-    htmlContent: htmlContent
+    htmlContent: htmlContent,
+    attachment: attachments
   };
 
   try {
     const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log(`[Email] Email sent successfully, messageId: ${result.messageId}`);
+    console.log(`[Email] Email sent successfully with inline images, messageId: ${result.messageId}`);
     return result;
   } catch (error) {
     console.error('[Email] Error sending email:', error);
