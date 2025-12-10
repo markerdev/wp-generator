@@ -32,7 +32,7 @@ router.post('/generate-glazing', async (req, res) => {
 
     console.log('[Generate] Images generated successfully');
 
-    // Upload images to Google Cloud Storage (optional, for backup/frontend)
+    // Upload images to Google Cloud Storage
     let glazingOnlyUrl = '';
     let fullModificationUrl = '';
 
@@ -52,13 +52,12 @@ router.post('/generate-glazing', async (req, res) => {
       }
     } catch (uploadError) {
       console.error('[Generate] Storage upload error:', uploadError);
-      // Continue with base64 images - email will still work with inline images
-      glazingOnlyUrl = `data:image/png;base64,${glazingOnlyImage}`;
-      fullModificationUrl = fullModificationImage ? `data:image/png;base64,${fullModificationImage}` : '';
+      // Continue with base64 images if upload fails
+      glazingOnlyUrl = glazingOnlyImage;
+      fullModificationUrl = fullModificationImage || '';
     }
 
-    // Send email with base64 images as inline attachments (CID)
-    // This ensures images are always visible regardless of GCS status
+    // Send email in background (don't await)
     sendResultEmail({
       email: contactData.email,
       name: contactData.name,
@@ -69,15 +68,14 @@ router.post('/generate-glazing', async (req, res) => {
       role: contactData.role,
       facadeColor,
       railingMaterial,
-      glazingOnlyImageBase64: glazingOnlyImage,
-      fullModificationImageBase64: fullModificationImage
+      glazingOnlyImageUrl: glazingOnlyUrl,
+      fullModificationImageUrl: fullModificationUrl
     }).catch(err => {
       console.error('[Generate] Email send error:', err);
     });
 
     console.log('[Generate] Returning response');
 
-    // Return URLs (or base64 data URLs as fallback) to frontend
     return res.json({
       success: true,
       glazingOnlyImage: glazingOnlyUrl,

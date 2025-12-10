@@ -1,23 +1,14 @@
 const { Storage } = require('@google-cloud/storage');
 
-// Parse credentials from JSON secret file
-let credentials;
-try {
-  const credentialsJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
-  if (credentialsJson) {
-    credentials = JSON.parse(credentialsJson);
-  }
-} catch (error) {
-  console.error('[Storage] Failed to parse GOOGLE_APPLICATION_CREDENTIALS_JSON:', error.message);
-}
+// Google Cloud SDK lukee automaattisesti GOOGLE_APPLICATION_CREDENTIALS -polusta
+const storage = new Storage();
 
-// Initialize Google Cloud Storage
-const storage = credentials ? new Storage({
-  projectId: credentials.project_id,
-  credentials: credentials
-}) : null;
+const bucketName = process.env.GCS_BUCKET_NAME;
 
-const bucketName = process.env.GCS_BUCKET_NAME || 'parvekelasitus-images';
+// Debug: Log configuration on startup
+console.log('[Storage] Initialized with:');
+console.log('[Storage] - GOOGLE_APPLICATION_CREDENTIALS:', process.env.GOOGLE_APPLICATION_CREDENTIALS || 'not set');
+console.log('[Storage] - GCS_BUCKET_NAME:', bucketName || 'not set');
 
 /**
  * Upload a base64 image to Google Cloud Storage
@@ -26,10 +17,9 @@ const bucketName = process.env.GCS_BUCKET_NAME || 'parvekelasitus-images';
  * @returns {Promise<string>} Public URL of the uploaded image
  */
 async function uploadImage(base64Image, filename) {
-  if (!storage) {
-    throw new Error('Google Cloud Storage not configured - missing credentials');
-  }
-
+  console.log('[Storage] Starting upload:', filename);
+  console.log('[Storage] Bucket:', bucketName);
+  
   // Strip data URL prefix if present
   const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
   
@@ -51,7 +41,7 @@ async function uploadImage(base64Image, filename) {
   // Return public URL
   const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
   
-  console.log(`[Storage] Uploaded image: ${publicUrl}`);
+  console.log('[Storage] Uploaded image:', publicUrl);
   
   return publicUrl;
 }
@@ -61,19 +51,14 @@ async function uploadImage(base64Image, filename) {
  * @param {string} filename - Filename to delete
  */
 async function deleteImage(filename) {
-  if (!storage) {
-    console.error('[Storage] Cannot delete - storage not configured');
-    return;
-  }
-
   const bucket = storage.bucket(bucketName);
   const file = bucket.file(filename);
   
   try {
     await file.delete();
-    console.log(`[Storage] Deleted image: ${filename}`);
+    console.log('[Storage] Deleted image:', filename);
   } catch (error) {
-    console.error(`[Storage] Error deleting image: ${filename}`, error);
+    console.error('[Storage] Error deleting image:', filename, error);
   }
 }
 
