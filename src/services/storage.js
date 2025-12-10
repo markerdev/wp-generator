@@ -29,13 +29,13 @@ async function uploadImage(base64Image, filename) {
   const bucket = storage.bucket(bucketName);
   const file = bucket.file(filename);
 
-  // Upload the image
+  // Upload the image (bucket-level access handles public visibility)
   await file.save(imageBuffer, {
     metadata: {
       contentType: 'image/png',
       cacheControl: 'public, max-age=31536000' // Cache for 1 year
-    },
-    public: true // Make publicly accessible
+    }
+    // Note: public: true removed - uniform bucket-level access with allUsers handles this
   });
 
   // Return public URL

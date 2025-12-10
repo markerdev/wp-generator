@@ -80,6 +80,13 @@ async function sendResultEmail(data) {
                     Kiitos mielenkiinnostasi Lumon SmartProtect -parvekelasitusta kohtaan! Oheisena ovat visualisoinnit taloyhtiöllenne ${housingCompanyName}.
                   </p>
                   
+                  <!-- Image display instruction -->
+                  <div style="background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <p style="color: #856404; margin: 0; font-size: 13px;">
+                      💡 <strong>Huom:</strong> Jos kuvat eivät näy automaattisesti, klikkaa sähköpostiohjelmasi "Näytä kuvat" -painiketta tai avaa kuvat alla olevista linkeistä.
+                    </p>
+                  </div>
+                  
                   <!-- Contact Details -->
                   <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
                     <h3 style="color: #1e3a5f; margin: 0 0 15px 0; font-size: 16px;">Yhteystiedot</h3>
@@ -116,13 +123,19 @@ async function sendResultEmail(data) {
                   <h3 style="color: #1e3a5f; margin: 20px 0 15px 0; font-size: 16px;">Visualisoinnit</h3>
                   
                   <div style="margin-bottom: 20px;">
-                    <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;"><strong>Parvekelasitus:</strong></p>
+                    <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">
+                      <strong>Parvekelasitus:</strong> 
+                      <a href="${glazingOnlyImageUrl}" target="_blank" style="color: #2d5a87; text-decoration: underline;">Avaa kuva selaimessa →</a>
+                    </p>
                     <img src="${glazingOnlyImageUrl}" alt="Parvekelasitus-visualisointi" style="width: 100%; border-radius: 8px; border: 1px solid #e0e0e0;">
                   </div>
                   
                   ${fullModificationImageUrl ? `
                   <div style="margin-bottom: 20px;">
-                    <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;"><strong>Täysi muokkaus:</strong></p>
+                    <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">
+                      <strong>Täysi muokkaus:</strong>
+                      <a href="${fullModificationImageUrl}" target="_blank" style="color: #2d5a87; text-decoration: underline;">Avaa kuva selaimessa →</a>
+                    </p>
                     <img src="${fullModificationImageUrl}" alt="Täysi muokkaus -visualisointi" style="width: 100%; border-radius: 8px; border: 1px solid #e0e0e0;">
                   </div>
                   ` : ''}
