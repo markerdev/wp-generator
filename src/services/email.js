@@ -57,7 +57,7 @@ async function sendResultEmail(data) {
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Parvekelasitus-visualisointisi</title>
+      <title>Taloyhtiönne uusittu julkisivu</title>
     </head>
     <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
       <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f5f5f5; padding: 20px;">
@@ -67,8 +67,7 @@ async function sendResultEmail(data) {
               <!-- Header -->
               <tr>
                 <td style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); padding: 30px; text-align: center;">
-                  <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Lumon SmartProtect</h1>
-                  <p style="color: #a8c5e2; margin: 10px 0 0 0; font-size: 14px;">Parvekelasitus-visualisointi</p>
+                  <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Lumon Suomi</h1>
                 </td>
               </tr>
               
@@ -76,53 +75,12 @@ async function sendResultEmail(data) {
               <tr>
                 <td style="padding: 30px;">
                   <h2 style="color: #1e3a5f; margin: 0 0 20px 0; font-size: 20px;">Hei ${name}!</h2>
-                  <p style="color: #333333; line-height: 1.6; margin: 0 0 20px 0;">
-                    Kiitos mielenkiinnostasi Lumon SmartProtect -parvekelasitusta kohtaan! Oheisena ovat visualisoinnit taloyhtiöllenne ${housingCompanyName}.
+                  <p style="color: #333333; line-height: 1.6; margin: 0 0 25px 0;">
+                    Kiitos mielenkiinnostasi – oheisena näet, miltä taloyhtiönne ${housingCompanyName} voisi näyttää parvekelasituksilla ja hieman suuremmalla muutoksella.
                   </p>
                   
-                  <!-- Image display instruction -->
-                  <div style="background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-                    <p style="color: #856404; margin: 0; font-size: 13px;">
-                      💡 <strong>Huom:</strong> Jos kuvat eivät näy automaattisesti, klikkaa sähköpostiohjelmasi "Näytä kuvat" -painiketta tai avaa kuvat alla olevista linkeistä.
-                    </p>
-                  </div>
-                  
-                  <!-- Contact Details -->
-                  <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-                    <h3 style="color: #1e3a5f; margin: 0 0 15px 0; font-size: 16px;">Yhteystiedot</h3>
-                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                      <tr><td style="padding: 5px 0; color: #666;">Nimi:</td><td style="padding: 5px 0; color: #333;">${name}</td></tr>
-                      <tr><td style="padding: 5px 0; color: #666;">Sähköposti:</td><td style="padding: 5px 0; color: #333;">${email}</td></tr>
-                      <tr><td style="padding: 5px 0; color: #666;">Puhelin:</td><td style="padding: 5px 0; color: #333;">${phone}</td></tr>
-                      <tr><td style="padding: 5px 0; color: #666;">Rooli:</td><td style="padding: 5px 0; color: #333;">${roleMap[role] || role}</td></tr>
-                    </table>
-                  </div>
-                  
-                  <!-- Housing Company Details -->
-                  <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-                    <h3 style="color: #1e3a5f; margin: 0 0 15px 0; font-size: 16px;">Taloyhtiön tiedot</h3>
-                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                      <tr><td style="padding: 5px 0; color: #666;">Nimi:</td><td style="padding: 5px 0; color: #333;">${housingCompanyName}</td></tr>
-                      <tr><td style="padding: 5px 0; color: #666;">Osoite:</td><td style="padding: 5px 0; color: #333;">${housingCompanyAddress}</td></tr>
-                      <tr><td style="padding: 5px 0; color: #666;">Kaupunki:</td><td style="padding: 5px 0; color: #333;">${housingCompanyCity}</td></tr>
-                    </table>
-                  </div>
-                  
-                  <!-- Modification Options -->
-                  ${(facadeColor && facadeColor !== 'original') || (railingMaterial && railingMaterial !== 'original') ? `
-                  <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-                    <h3 style="color: #1e3a5f; margin: 0 0 15px 0; font-size: 16px;">Valitut muutokset</h3>
-                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                      ${facadeColor && facadeColor !== 'original' ? `<tr><td style="padding: 5px 0; color: #666;">Julkisivun väri:</td><td style="padding: 5px 0; color: #333;">${facadeColorMap[facadeColor] || facadeColor}</td></tr>` : ''}
-                      ${railingMaterial && railingMaterial !== 'original' ? `<tr><td style="padding: 5px 0; color: #666;">Kaidemateriaali:</td><td style="padding: 5px 0; color: #333;">${railingMaterialMap[railingMaterial] || railingMaterial}</td></tr>` : ''}
-                    </table>
-                  </div>
-                  ` : ''}
-                  
                   <!-- Images -->
-                  <h3 style="color: #1e3a5f; margin: 20px 0 15px 0; font-size: 16px;">Visualisoinnit</h3>
-                  
-                  <div style="margin-bottom: 20px;">
+                  <div style="margin-bottom: 25px;">
                     <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">
                       <strong>Parvekelasitus:</strong> 
                       <a href="${glazingOnlyImageUrl}" target="_blank" style="color: #2d5a87; text-decoration: underline;">Avaa kuva selaimessa →</a>
@@ -131,7 +89,7 @@ async function sendResultEmail(data) {
                   </div>
                   
                   ${fullModificationImageUrl ? `
-                  <div style="margin-bottom: 20px;">
+                  <div style="margin-bottom: 25px;">
                     <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">
                       <strong>Täysi muokkaus:</strong>
                       <a href="${fullModificationImageUrl}" target="_blank" style="color: #2d5a87; text-decoration: underline;">Avaa kuva selaimessa →</a>
@@ -140,8 +98,41 @@ async function sendResultEmail(data) {
                   </div>
                   ` : ''}
                   
-                  <p style="color: #333333; line-height: 1.6; margin: 20px 0;">
-                    Otamme teihin yhteyttä pian keskustellaksemme tarkemmin parvekelasitusmahdollisuuksista taloyhtiöllenne.
+                  <!-- Benefits -->
+                  <p style="color: #333333; line-height: 1.6; margin: 25px 0 15px 0;">
+                    Parvekelasitus ei pelkästään lisää asumismukavuutta, vaan sillä on muitakin etuja, kuten
+                  </p>
+                  <ul style="color: #333333; line-height: 1.8; margin: 0 0 25px 0; padding-left: 20px;">
+                    <li>Suojaa rakenteita säärasitukselta</li>
+                    <li>Vähentää melua ja pölyä</li>
+                    <li>Nostaa asunnon arvoa</li>
+                    <li>Säästää energiaa</li>
+                  </ul>
+                  
+                  <!-- CTA Button -->
+                  <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://lumon.com/fi/parvekelasitus/miksi-parvekelasitus/" 
+                       target="_blank" 
+                       style="display: inline-block; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: bold; font-size: 15px;">
+                      Lue lisää parvekelasituksesta →
+                    </a>
+                  </div>
+                  
+                  <p style="color: #333333; line-height: 1.6; margin: 25px 0 0 0;">
+                    Otamme sinuun yhteyttä pian!
+                  </p>
+                  
+                  <p style="color: #666666; font-size: 13px; line-height: 1.6; margin: 20px 0 0 0; font-style: italic;">
+                    P.S. Jaa tämä viesti ja kuvat vapaasti myös muille taloyhtiönne hallituksen jäsenille tai isännöitsijälle – yhdessä on helpompi päättää!
+                  </p>
+                </td>
+              </tr>
+              
+              <!-- Compact Contact Info -->
+              <tr>
+                <td style="padding: 0 30px 20px 30px;">
+                  <p style="color: #888888; font-size: 12px; margin: 0; line-height: 1.5;">
+                    ${name} | ${housingCompanyName} | ${housingCompanyAddress}, ${housingCompanyCity} | ${phone} | ${email} | ${roleMap[role] || role}
                   </p>
                 </td>
               </tr>
@@ -150,7 +141,7 @@ async function sendResultEmail(data) {
               <tr>
                 <td style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e0e0e0;">
                   <p style="color: #666666; font-size: 12px; margin: 0;">
-                    © ${new Date().getFullYear()} Lumon SmartProtect. Kaikki oikeudet pidätetään.
+                    © ${new Date().getFullYear()} Lumon Suomi
                   </p>
                 </td>
               </tr>
@@ -164,7 +155,7 @@ async function sendResultEmail(data) {
 
   const sendSmtpEmail = {
     sender: {
-      name: process.env.BREVO_SENDER_NAME || 'Lumon SmartProtect',
+      name: process.env.BREVO_SENDER_NAME || 'Lumon Suomi',
       email: process.env.BREVO_SENDER_EMAIL || 'noreply@lumon.fi'
     },
     to: [
@@ -173,7 +164,7 @@ async function sendResultEmail(data) {
     bcc: process.env.NOTIFICATION_EMAIL ? [
       { email: process.env.NOTIFICATION_EMAIL }
     ] : [],
-    subject: `Parvekelasitus-visualisointi: ${housingCompanyName}`,
+    subject: `Taloyhtiönne uusittu julkisivu - olkaa hyvä`,
     htmlContent: htmlContent
   };
 

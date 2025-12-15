@@ -13,7 +13,7 @@ MANDATORY MODIFICATIONS (ALWAYS APPLY):
    - Glass should be frameless and modern looking
    - Ensure they appear professional and barely visible
    - Apply consistently to all floors and all sides of the building
-2. Add small text "Generated with Lumon AI" in the bottom corner of the image (make it subtle but readable, white or light colored text with slight shadow for visibility)
+2. Add small text "Muokattu tekoälyllä" in the bottom corner of the image (make it subtle but readable, white or light colored text with slight shadow for visibility)
 
 CRITICAL - DO NOT CHANGE:
 - Keep ALL existing balcony railings exactly as they are
@@ -62,7 +62,7 @@ MANDATORY MODIFICATIONS (ALWAYS APPLY):
    - Glass should be frameless and modern looking
    - Ensure they appear professional and barely visible
    - Apply consistently to all floors and all sides of the building
-2. Add small text "Generated with Lumon AI" in the bottom corner of the image (make it subtle but readable, white or light colored text with slight shadow for visibility)
+2. Add small text "Muokattu tekoälyllä" in the bottom corner of the image (make it subtle but readable, white or light colored text with slight shadow for visibility)
 
 `;
 
