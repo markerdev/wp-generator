@@ -1,10 +1,27 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const generateRouter = require('./routes/generate');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Rate limiting for generate endpoint - 10 requests per 15 minutes per IP
+const generateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // max 10 requests per IP
+  message: {
+    success: false,
+    error: 'Liian monta pyyntöä. Yritä uudelleen 15 minuutin kuluttua.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res, next, options) => {
+    console.warn(`[RateLimit] IP ${req.ip} exceeded limit`);
+    res.status(429).json(options.message);
+  }
+});
 
 // Parse allowed origins from environment variable
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
@@ -37,7 +54,8 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Main API routes
+// Main API routes with rate limiting on generate endpoint
+app.use('/api/generate-glazing', generateLimiter);
 app.use('/api', generateRouter);
 
 // Error handling middleware

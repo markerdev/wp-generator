@@ -7,7 +7,13 @@ const { v4: uuidv4 } = require('uuid');
 
 router.post('/generate-glazing', async (req, res) => {
   try {
-    const { imageBase64, facadeColor, railingMaterial, contactData } = req.body;
+    const { imageBase64, facadeColor, railingMaterial, contactData, honeypot } = req.body;
+
+    // Honeypot check - silently reject bots (return fake success)
+    if (honeypot) {
+      console.warn('[Generate] Honeypot triggered, blocking request');
+      return res.json({ success: true });
+    }
 
     // Validate required fields
     if (!imageBase64) {
@@ -16,6 +22,26 @@ router.post('/generate-glazing', async (req, res) => {
 
     if (!contactData || !contactData.email || !contactData.name) {
       return res.status(400).json({ success: false, error: 'Contact data is required' });
+    }
+
+    // Validate input lengths to prevent abuse
+    if (contactData.name && contactData.name.length > 100) {
+      return res.status(400).json({ success: false, error: 'Name too long' });
+    }
+    if (contactData.email && contactData.email.length > 255) {
+      return res.status(400).json({ success: false, error: 'Email too long' });
+    }
+    if (contactData.phone && contactData.phone.length > 30) {
+      return res.status(400).json({ success: false, error: 'Phone too long' });
+    }
+    if (contactData.housingCompanyName && contactData.housingCompanyName.length > 200) {
+      return res.status(400).json({ success: false, error: 'Company name too long' });
+    }
+
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(contactData.email)) {
+      return res.status(400).json({ success: false, error: 'Invalid email format' });
     }
 
     console.log(`[Generate] Starting image generation for ${contactData.email}`);
